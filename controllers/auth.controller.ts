@@ -5,6 +5,9 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
+// Store for invalidated tokens
+const invalidatedTokens = new Set<string>();
+
 // Generate JWT Token
 const generateToken = (id: number) => {
   return jwt.sign({ id }, process.env.JWT_SECRET as string, {
@@ -17,10 +20,15 @@ const generateToken = (id: number) => {
 // @access  Public
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role = "USER" } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Please add all fields" });
+    }
+
+    // Validate role
+    if (role !== "ADMIN" && role !== "USER") {
+      return res.status(400).json({ message: "Invalid role specified" });
     }
 
     // Check if user exists
@@ -42,6 +50,7 @@ export const registerUser = async (req: Request, res: Response) => {
         name,
         email,
         password: hashedPassword,
+        role,
       },
     });
 
@@ -50,6 +59,7 @@ export const registerUser = async (req: Request, res: Response) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: generateToken(user.id),
       });
     } else {
@@ -78,6 +88,7 @@ export const loginUser = async (req: Request, res: Response) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: generateToken(user.id),
       });
     } else {
@@ -104,4 +115,33 @@ export const getMe = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
+};
+
+// @desc    Logout user
+// @route   POST /api/auth/logout
+// @access  Private
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (token) {
+      // Add the token to invalidated tokens set
+      invalidatedTokens.add(token);
+
+      // Clean up old tokens (optional)
+      setTimeout(() => {
+        invalidatedTokens.delete(token);
+      }, 24 * 60 * 60 * 1000); // Remove after 24 hours
+    }
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Function to check if a token is invalidated
+export const isTokenInvalidated = (token: string): boolean => {
+  return invalidatedTokens.has(token);
 };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { isTokenInvalidated } from "../controllers/auth.controller";
 
 const prisma = new PrismaClient();
 
@@ -22,6 +23,11 @@ export const protect = async (
     try {
       // Get token from header
       token = req.headers.authorization.split(" ")[1];
+
+      // Check if token has been invalidated (logged out)
+      if (isTokenInvalidated(token)) {
+        return res.status(401).json({ message: "Token has been invalidated" });
+      }
 
       // Verify token
       const decoded = jwt.verify(

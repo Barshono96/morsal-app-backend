@@ -20,7 +20,7 @@ model User {
   password  String
   name      String?
   image     String?
-  role      String   @default("ADMIN")
+  role      Role     @default(ADMIN)
   createdAt DateTime @default(now())
 }
 
@@ -28,7 +28,7 @@ model Food{
   id        Int      @id @default(autoincrement())
   name      String
   image     String
-  category  String
+  category  Category
   createdAt DateTime @default(now())
 }
 

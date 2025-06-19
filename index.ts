@@ -13,3 +13,4 @@ app.listen(PORT, async () => {
     console.error("Error connecting to the database:", error);
   }
 });
+export default prisma;
