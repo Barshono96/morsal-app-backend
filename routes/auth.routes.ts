@@ -4,8 +4,10 @@ import {
   loginUser,
   getMe,
   logoutUser,
+  updateProfilePicture,
 } from "../controllers/auth.controller";
 import { protect } from "../middleware/auth.middleware";
+import { upload } from "../config/multer.config";
 
 const router: Router = express.Router();
 
@@ -20,6 +22,12 @@ router.post(
   "/logout",
   protect as express.RequestHandler,
   logoutUser as express.RequestHandler
+);
+router.patch(
+  "/profile-picture",
+  protect as express.RequestHandler,
+  upload.single("image") as express.RequestHandler,
+  updateProfilePicture as express.RequestHandler
 );
 
 export default router;

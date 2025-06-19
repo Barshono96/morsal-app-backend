@@ -1,3 +1,4 @@
+import { token } from "morgan";
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -20,7 +21,7 @@ const generateToken = (id: number) => {
 // @access  Public
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role = "USER" } = req.body;
+    const { name, email, password, role = "ADMIN" } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Please add all fields" });
@@ -71,7 +72,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Authenticate a user
+// @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
 export const loginUser = async (req: Request, res: Response) => {
@@ -135,6 +136,31 @@ export const logoutUser = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc    Update user profile picture
+// @route   PATCH /api/auth/profile-picture
+// @access  Private
+export const updateProfilePicture = async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Please upload an image file" });
+    }
+
+    const userId = (req as any).user.id;
+    const imageUrl = `/uploads/profiles/${req.file.filename}`;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { image: imageUrl },
+      select: { id: true, name: true, email: true, role: true, image: true },
+    });
+
+    res.json(updatedUser);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
