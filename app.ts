@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import authRoutes from "./routes/auth.routes";
+import foodsRoutes from "./routes/food.routes"; // Assuming you have a foods.routes file
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+app.use("/api/food", foodsRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response, next: NextFunction) => {

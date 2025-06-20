@@ -1,8 +1,8 @@
-import { token } from "morgan";
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 
 const prisma = new PrismaClient();
 
@@ -151,8 +151,10 @@ export const updateProfilePicture = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Please upload an image file" });
     }
 
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    console.log("BASE=", baseUrl);
     const userId = (req as any).user.id;
-    const imageUrl = `/uploads/${req.file.filename}`;
+    const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
