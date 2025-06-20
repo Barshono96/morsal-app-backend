@@ -4,7 +4,7 @@ import path from "path";
 // Configure multer for storing uploaded files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/profiles"); // Files will be stored in uploads/profiles directory
+    cb(null, "uploads"); //stored in uploads directory
   },
   filename: (req, file, cb) => {
     // Create unique filename: timestamp-originalname
@@ -31,6 +31,6 @@ export const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max file size
+    fileSize: 5 * 1024 * 1024, 
   },
 });
