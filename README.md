@@ -124,4 +124,4 @@ This backend is built for the Morsl App project and is for internal use only.
 ## 🙋 Contact
 
 **Developer:** Barshon  
-GitHub: [github.com/yourusername](https://github.com/barshono96)
+GitHub: [github.com/barshono96](https://github.com/barshono96)
