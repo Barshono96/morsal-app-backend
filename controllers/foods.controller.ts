@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Category, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -46,19 +46,19 @@ export const getCollection = async (req: Request, res: Response) => {
     const pageLimit = Number(limit);
     const skip = (currentPage - 1) * pageLimit;
 
-    // Category filter (optional)
+    // Category filtering
     const where: any = category && { category: String(category).toUpperCase() };
 
-    // Total count for pagination
-    const totalCount = await prisma.food.count({ where });
 
-    // Fetch paginated + filtered food list
+    const totalCount = await prisma.food.count({ where }); //total count
+
+  
     const foods = await prisma.food.findMany({
       where,
       skip,
       take: pageLimit,
       orderBy: {
-        createdAt: "asc", // or "desc" based on your requirement
+        createdAt: "asc", 
       },
     });
 

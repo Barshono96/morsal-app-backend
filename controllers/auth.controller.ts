@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-
 const prisma = new PrismaClient();
 
 // Store for invalidated tokens
@@ -16,9 +15,8 @@ const generateToken = (id: number) => {
   });
 };
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
+//Register new user
+
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, role = "ADMIN" } = req.body;
@@ -72,9 +70,8 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
+//Login user
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -101,14 +98,13 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Get user data
-// @route   GET /api/auth/me
-// @access  Private
+//Get user data
+
 export const getMe = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: (req as any).user.id },
-      select: { id: true, name: true, email: true, role: true },
+      select: { id: true, name: true, email: true, role: true, },
     });
 
     res.json(user);
@@ -118,9 +114,7 @@ export const getMe = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Logout user
-// @route   POST /api/auth/logout
-// @access  Private
+//Logout user
 export const logoutUser = async (req: Request, res: Response) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -142,9 +136,8 @@ export const logoutUser = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Update user profile picture
-// @route   PATCH /api/auth/profile-picture
-// @access  Private
+//Update user profile picture
+
 export const updateProfilePicture = async (req: Request, res: Response) => {
   try {
     if (!req.file) {

@@ -1,13 +1,16 @@
 import express, { Request, Response, NextFunction } from "express";
+import fs from "fs";
 import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import authRoutes from "./routes/auth.routes";
-import foodsRoutes from "./routes/food.routes"; // Assuming you have a foods.routes file
+import foodsRoutes from "./routes/food.routes";
+import feedbackRoutes from "./routes/feedback.route";
+
 
 const app = express();
+console.log(fs);
 
-// Enhanced CORS configuration
 app.use(
   cors({
     origin: [
@@ -44,6 +47,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Auth routes
 app.use("/api/auth", authRoutes);
 app.use("/api/food", foodsRoutes);
+app.use("/api/feedbacks", feedbackRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response, next: NextFunction) => {
