@@ -35,7 +35,7 @@ prisma/schema.prisma → Prisma DB schema
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/morsl-admin-backend.git
+git clone https://github.com/Barshono96/morsal-app-backend.git
 cd morsl-admin-backend
 ```
 
