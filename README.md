@@ -17,7 +17,7 @@ This is the backend API for the **Morsl App Admin Dashboard**, supporting conten
 ---
 
 ## 📁 Project Structure
-
+<pre> ```
 /src
 ┣ /controllers → Route handlers (auth, feedback, image, etc.)
 ┣ /middlewares → JWT auth checks, error handling
@@ -27,7 +27,7 @@ This is the backend API for the **Morsl App Admin Dashboard**, supporting conten
 ┣ app.ts → App setup
 ┗ server.ts → Server entry point
 prisma/schema.prisma → Prisma DB schema
-
+ ``` </pre>
 ---
 
 ## 🚀 Getting Started
