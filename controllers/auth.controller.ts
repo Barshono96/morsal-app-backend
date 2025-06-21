@@ -11,7 +11,7 @@ const invalidatedTokens = new Set<string>();
 // Generate JWT Token
 const generateToken = (id: number) => {
   return jwt.sign({ id }, process.env.JWT_SECRET as string, {
-    expiresIn: "30d",
+    expiresIn: "1d",
   });
 };
 
@@ -25,12 +25,11 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Please add all fields" });
     }
 
-    // Validate role
+   
     if (role !== "ADMIN" && role !== "USER") {
       return res.status(400).json({ message: "Invalid role specified" });
     }
 
-    // Check if user exists
     const userExists = await prisma.user.findUnique({
       where: { email },
     });
@@ -39,11 +38,9 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
     const user = await prisma.user.create({
       data: {
         name,
@@ -145,7 +142,6 @@ export const updateProfilePicture = async (req: Request, res: Response) => {
     }
 
     const baseUrl = `${req.protocol}://${req.get("host")}`;
-    console.log("BASE=", baseUrl);
     const userId = (req as any).user.id;
     const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
